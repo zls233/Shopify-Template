@@ -1,0 +1,16 @@
+{
+  "name": "shopify-template",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "check": "npm run check:js && npm run check:json",
+    "check:js": "node --check scripts/check-json.mjs && node --check scripts/lib/shopify-admin.mjs && node --check scripts/verify-shopify-context.mjs && node --check theme/assets/theme.js",
+    "check:json": "node scripts/check-json.mjs",
+    "verify:shopify": "node scripts/verify-shopify-context.mjs",
+    "test:smoke": "playwright test"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.52.0",
+    "dotenv": "^16.4.7"
+  }
+}

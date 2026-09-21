@@ -1,0 +1,21 @@
+<section class="page-section page-width">
+  <div class="page-section__content">
+    <h1>{{ shop.name }}</h1>
+    <p>{{ section.settings.intro }}</p>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Main index",
+  "settings": [
+    {
+      "type": "textarea",
+      "id": "intro",
+      "label": "Introduction",
+      "default": "Start building your Shopify storefront here."
+    }
+  ]
+}
+{% endschema %}
+
