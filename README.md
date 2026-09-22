@@ -68,10 +68,10 @@ Collection product grid
 ## 新项目初始化
 
 1. 从本模板创建项目副本，并确认目标 Shopify 店铺域名。
-2. 使用 Shopify CLI 初始化 `theme/`，需要后台资源同步时再创建 `shopify-app/`。
+2. 使用 Shopify CLI 初始化 `theme/`。店铺自有资源可使用 CLI store auth/execute；需要 App 自有 schema 时再创建 `shopify-app/`。
 3. 创建本地未跟踪的 `.env.local`，只保存当前项目所需的店铺和 App 配置。不要把凭据发到聊天中或写入脚本。
 4. 为所有 mutation 脚本设置显式 `--store`，先执行 dry-run，再进行写入。
-5. 完整建站项目先运行 `preflight:shopify`，核对目标店铺、项目 App Client ID 与实际获批 scopes；不要仅根据本地 `shopify.app.toml` 判断权限已经生效。
+5. 完整建站项目先运行 `connect:shopify`（CLI 路径）或 `preflight:shopify`（项目 App 路径），核对目标店铺、执行身份与实际获批 scopes。
 6. 默认使用 Draft/Development Theme，完成验证后再由用户决定是否发布。
 
 推荐的第一次检查：
@@ -161,7 +161,15 @@ JSON 模板、Liquid schema 和脚本输出也应在提交前解析或执行 dry
 
 ### Store 和 scope 校验
 
-将 `.env.example` 复制为 `.env.local`，填入当前项目的 Admin token 和 App Client ID 后，完整建站项目先运行：
+对店铺自有的商品、分类、菜单和内容，直接运行：
+
+```bash
+npm run connect:shopify -- --store <store>.myshopify.com
+```
+
+命令会先检查 Shopify CLI 已保存的授权；没有可用授权或缺少建站权限时，运行 `shopify store auth` 申请完整权限包，随后读回店铺、App 身份及实际 scopes。首次授权可能需要店铺人员批准，在线令牌过期时重新运行即可。之后可用 `shopify store execute --store <store>.myshopify.com --query-file <file> --allow-mutations` 执行经核对的 Admin GraphQL 写入。
+
+如项目使用自己的 App，先将 `.env.example` 复制为 `.env.local`，填入该 App 的 Admin token 和 Client ID，再运行：
 
 ```bash
 npm run preflight:shopify -- --store <store>.myshopify.com
@@ -181,7 +189,7 @@ npm run verify:shopify -- \
 
 ### 新增 scope 后 API 仍然拒绝
 
-检查顺序：
+CLI store auth 路径先重新运行 `npm run connect:shopify -- --store <store>.myshopify.com`；它会申请缺失权限并再次核对。项目 App 路径按以下顺序检查：
 
 1. `shopify.app.toml` 是否包含所需 scope。
 2. 是否完成 `shopify app build` 和 `shopify app deploy --allow-updates`。

@@ -37,11 +37,13 @@ promoting them here.
 
 ## Authentication, Scopes, and Secrets
 
-- Use the project's own Shopify app identity for Admin GraphQL resource work.
-  Do not use `shopify store auth` or a CLI built-in identity for new Products,
-  Collections, Menus, Publications, or Metaobjects automation.
-- Shopify CLI is appropriate for `app build`, `app deploy`, `theme check`,
-  `theme dev`, and `theme push`.
+- For merchant-owned Products, Collections, Menus, Pages, Blogs, Articles,
+  Publications, Files, inventory, and Metaobjects, use one consistent Admin
+  GraphQL identity. The direct CLI path is `shopify store auth` followed by
+  `shopify store execute`; the project's own App is also supported. App-owned
+  `$app` Metafield or Metaobject schemas and entries require their owning App.
+- Shopify CLI is appropriate for store auth and execution, app build/deploy,
+  theme check/dev/push, and other supported operations.
 - For a full store-building project, request the broad site-building scope set
   at initial app installation: `write_products`, `write_publications`,
   `write_online_store_navigation`, `write_content`, `write_metaobjects`,
@@ -54,29 +56,33 @@ promoting them here.
   operational scopes unless the project later requires them. Theme-only
   projects do not need this Admin GraphQL scope set.
 - This template has no `shopify.app.toml`. Theme-only projects do not need an
-  app solely to request the candidate scopes. If Admin GraphQL resource work is
-  planned, create or link this project's own Shopify app before validating or
-  deploying app configuration.
-- Keep separate records of planned scopes, scopes declared in
-  `shopify.app.toml`, and scopes actually granted to the installed app. Validate
-  app configuration with `shopify app config validate --json` before deploying.
+  App solely to request candidate scopes. Merchant-owned resource work can use
+  CLI store auth without scaffolding a project App. If project-owned schemas or
+  a dedicated App identity are needed, create or link this project's own App
+  before validating or deploying its configuration.
+- For a dedicated project App, keep separate records of planned scopes,
+  scopes declared in `shopify.app.toml`, and scopes actually granted to the
+  installed App. Validate App config with `shopify app config validate --json`
+  before deploying. For CLI store auth, compare requested and actually granted
+  scopes through `connect:shopify`.
 - Read `currentAppInstallation.accessScopes` before assuming a scope is active.
   Local `shopify.app.toml` changes do not update an existing installation by
   themselves; deploy and then re-authorize/reinstall the app when required.
-- Before full store-building resource work, run
-  `npm run preflight:shopify -- --store <store>.myshopify.com` with this project's
-  `SHOPIFY_APP_CLIENT_ID` and Admin token configured locally. It checks the
-  live store, installed App identity, and broad site-building scope set. Reuse
-  a passing result for the same project, but rerun the read-only check before
-  later resource mutations; do not recreate the App or request scopes again
-  when the existing installation is sufficient.
+- For the direct CLI path, run
+  `npm run connect:shopify -- --store <store>.myshopify.com` before resource
+  work. It checks existing authorization, requests the broad site-building
+  scopes only if needed, then verifies the real store, App identity and scopes.
+  Reuse the stored CLI authorization; rerun the command if it expires. For the
+  dedicated project App path, run
+  `npm run preflight:shopify -- --store <store>.myshopify.com` with this
+  project's `SHOPIFY_APP_CLIENT_ID` and Admin token configured locally.
 - Check the current app's ability to perform the planned operation, not merely
   whether both the `read_*` and `write_*` names appear in a local list. If the
   task only reads a resource, request its read scope instead of its write scope.
-- `shopify app execute` permits mutations only on dev stores. Do not use it as
-  the general production-store mutation path. Before using `shopify store auth`
-  or `shopify store execute`, verify that their app identity is appropriate for
-  the resource; scopes do not grant ownership of another app's Metaobjects.
+- `shopify app execute` permits mutations only on dev stores. For production
+  data work under CLI store auth, use `shopify store execute --store ...
+  --query-file ... --allow-mutations` and inspect GraphQL errors, userErrors,
+  and readback. Scopes do not grant ownership of another App's Metaobjects.
 - In non-interactive environments, app deployment needs an explicit approval
   flag, normally `shopify app deploy --allow-updates`.
 - If CLI app installation only supports an organization dev store, do not
@@ -232,7 +238,8 @@ Known implementation pitfalls:
 Use this order of operations:
 
 1. Shell, repository scripts, and static inspection.
-2. Project App plus Admin GraphQL API for data/resource work.
+2. Shopify CLI store auth/execute for merchant-owned resources, or the project
+   App plus Admin GraphQL when it owns the target resources.
 3. Shopify CLI for app/theme lifecycle.
 4. Playwright for storefront interaction and screenshot QA.
 5. Computer Use only for authentication or UI-only work. When Shopify Admin

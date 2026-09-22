@@ -4,10 +4,11 @@
   "type": "module",
   "scripts": {
     "check": "npm run check:js && npm run check:json",
-    "check:js": "node --check scripts/check-json.mjs && node --check scripts/lib/shopify-admin.mjs && node --check scripts/verify-shopify-context.mjs && node --check theme/assets/theme.js",
+    "check:js": "node --check scripts/check-json.mjs && node --check scripts/lib/shopify-admin.mjs && node --check scripts/verify-shopify-context.mjs && node --check scripts/connect-shopify-store.mjs && node --check theme/assets/theme.js",
     "check:json": "node scripts/check-json.mjs",
     "verify:shopify": "node scripts/verify-shopify-context.mjs",
     "preflight:shopify": "node scripts/verify-shopify-context.mjs --site-build",
+    "connect:shopify": "node scripts/connect-shopify-store.mjs",
     "test:smoke": "playwright test"
   },
   "devDependencies": {
