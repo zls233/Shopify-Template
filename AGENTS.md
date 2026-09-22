@@ -42,15 +42,31 @@ promoting them here.
   Collections, Menus, Publications, or Metaobjects automation.
 - Shopify CLI is appropriate for `app build`, `app deploy`, `theme check`,
   `theme dev`, and `theme push`.
+- At project initialization, map the expected Admin GraphQL operations to scopes
+  and the app identity that will execute them. For projects covering catalog
+  writes, Online Store publication, menus, content, and Metaobjects, consider
+  `write_products`, `write_publications`,
+  `write_online_store_navigation`, `write_content`, `write_metaobjects`, and
+  `write_metaobject_definitions`; remove any scope the planned work does not
+  need. Add inventory, location, or Files scopes only when those operations are
+  in scope. A write scope includes the corresponding read capability.
+- This template has no `shopify.app.toml`. Theme-only projects do not need an
+  app solely to request the candidate scopes. If Admin GraphQL resource work is
+  planned, create or link this project's own Shopify app before validating or
+  deploying app configuration.
+- Keep separate records of planned scopes, scopes declared in
+  `shopify.app.toml`, and scopes actually granted to the installed app. Validate
+  app configuration with `shopify app config validate --json` before deploying.
 - Read `currentAppInstallation.accessScopes` before assuming a scope is active.
   Local `shopify.app.toml` changes do not update an existing installation by
   themselves; deploy and then re-authorize/reinstall the app when required.
-- Request only the scopes needed for the operation. Typical scopes are:
-  `read_products`, `write_products`, `read_publications`,
-  `write_publications`, `write_online_store_navigation`,
-  `read_metaobjects`, `write_metaobjects`,
-  `read_metaobject_definitions`, `write_metaobject_definitions`,
-  `read_content`, and `write_content`.
+- Check the current app's ability to perform the planned operation, not merely
+  whether both the `read_*` and `write_*` names appear in a local list. If the
+  task only reads a resource, request its read scope instead of its write scope.
+- `shopify app execute` permits mutations only on dev stores. Do not use it as
+  the general production-store mutation path. Before using `shopify store auth`
+  or `shopify store execute`, verify that their app identity is appropriate for
+  the resource; scopes do not grant ownership of another app's Metaobjects.
 - In non-interactive environments, app deployment needs an explicit approval
   flag, normally `shopify app deploy --allow-updates`.
 - If CLI app installation only supports an organization dev store, do not
@@ -79,6 +95,15 @@ Keep the resource graph as the source of truth:
 - Collections must be automated/rule-based. Reuse an existing collection by
   stable handle before creating one. Do not store product ID lists in Liquid or
   JavaScript.
+- When a collection mixes categories (for example, men's or children's items
+  appearing in a women's collection), inspect product tags/metafields and the
+  automated collection's conditions first. Check collection counts and sample
+  products that should both match and fail the rules before changing Liquid.
+- Do not make title/handle substring filtering in Liquid the permanent source
+  of collection membership. If an explicitly authorized temporary storefront
+  guard is necessary, document that pagination and `products_count` can differ
+  from the visible items, then remove the guard after correcting Shopify
+  product classification and collection rules.
 - Publish required collections and products to the Online Store channel
   explicitly. `ACTIVE` status is not the same as Online Store publication;
   use `publishablePublish` (or the equivalent API) and verify publication.
@@ -122,10 +147,11 @@ Keep the resource graph as the source of truth:
 - Footer links must resolve to real Shopify Pages, Blogs, and Articles. Use a
   stable handle mapping and an idempotent sync script rather than fake content
   or hardcoded 404 fallbacks.
-- Content scripts must fail safely before mutation when `read_content` or
-  `write_content` is missing. A theme can retain an official external help or
-  store-locator link as a documented fallback, but must not invent order,
-  store, or shipping data.
+- Content scripts must fail safely before mutation when the installed app lacks
+  the ability to write content. Do not require both scope names when
+  `write_content` already grants read capability. A theme can retain an official
+  external help or store-locator link as a documented fallback, but must not
+  invent order, store, or shipping data.
 
 ## Theme Architecture
 
@@ -204,11 +230,36 @@ Use this order of operations:
    authenticated SunBrowser session and do not switch to an in-app browser or
    another browser profile for the same task.
 
-If Theme CLI reports `401 Service is not valid for authentication`, confirm no
-stale Theme CLI process is running, run `shopify auth logout`, run
-`shopify auth login`, select the intended account, and retry with explicit
-`--store`, `--path`, and `--theme`. This recovery does not authorize using the
-CLI identity for Admin GraphQL data mutations.
+## Theme Access and Deployment
+
+- Prefer a Theme Access token for Shopify CLI theme operations. Load
+  `SHOPIFY_CLI_THEME_TOKEN` from an ignored `.env.local` or an OS credential
+  store into the command environment without printing it. A storefront password
+  is not a Theme Access token. Do not start `shopify auth login` or change the
+  selected account unless the user explicitly authorizes account-based login.
+- Immediately before any operation targeting the live theme, run
+  `shopify theme list --store <store>.myshopify.com --json` using Theme Access
+  and identify the current live theme ID from that response. Do not trust a
+  theme ID saved in a README, report, environment file, or prior session.
+- For an explicitly authorized live file change, target that freshly resolved
+  theme ID and use `--allow-live --nodelete`; add `--only` for every changed
+  file when the change is narrow. Never treat these flags as permission to
+  publish or alter unrelated live theme files.
+- After a live push, list themes again to confirm the target remains live.
+  Pull changed files into an isolated temporary directory with explicit
+  `--store`, `--theme`, and `--only` flags, then compare their SHA-256 hashes
+  with the local source files. Also verify the affected storefront pages on
+  desktop and mobile. A successful upload or matching hash alone does not
+  prove that the visible result is correct.
+- If Theme CLI reports `401 Service is not valid for authentication`, first
+  check that the intended Theme Access token is present in the command
+  environment without displaying it, that it belongs to the target store and
+  has the needed theme access, and that no stale theme process is running.
+  Retry with explicit `--store`, `--path`, and `--theme`. If Theme Access cannot
+  be restored, report the authentication blocker; use account-based
+  `shopify auth logout` / `shopify auth login` only when the user has explicitly
+  authorized that path. Theme authentication never authorizes using the CLI
+  identity for Admin GraphQL data mutations.
 
 Stop a long-running `theme dev` watcher before patching files if it holds a
 lock or blocks writes; restart it with the explicit Draft Theme after edits.
