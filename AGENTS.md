@@ -63,6 +63,13 @@ promoting them here.
 - Read `currentAppInstallation.accessScopes` before assuming a scope is active.
   Local `shopify.app.toml` changes do not update an existing installation by
   themselves; deploy and then re-authorize/reinstall the app when required.
+- Before full store-building resource work, run
+  `npm run preflight:shopify -- --store <store>.myshopify.com` with this project's
+  `SHOPIFY_APP_CLIENT_ID` and Admin token configured locally. It checks the
+  live store, installed App identity, and broad site-building scope set. Reuse
+  a passing result for the same project, but rerun the read-only check before
+  later resource mutations; do not recreate the App or request scopes again
+  when the existing installation is sufficient.
 - Check the current app's ability to perform the planned operation, not merely
   whether both the `read_*` and `write_*` names appear in a local list. If the
   task only reads a resource, request its read scope instead of its write scope.

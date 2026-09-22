@@ -71,7 +71,7 @@ Collection product grid
 2. 使用 Shopify CLI 初始化 `theme/`，需要后台资源同步时再创建 `shopify-app/`。
 3. 创建本地未跟踪的 `.env.local`，只保存当前项目所需的店铺和 App 配置。不要把凭据发到聊天中或写入脚本。
 4. 为所有 mutation 脚本设置显式 `--store`，先执行 dry-run，再进行写入。
-5. 先确认 `currentAppInstallation.accessScopes`，不要仅根据本地 `shopify.app.toml` 判断权限已经生效。
+5. 完整建站项目先运行 `preflight:shopify`，核对目标店铺、项目 App Client ID 与实际获批 scopes；不要仅根据本地 `shopify.app.toml` 判断权限已经生效。
 6. 默认使用 Draft/Development Theme，完成验证后再由用户决定是否发布。
 
 推荐的第一次检查：
@@ -161,7 +161,13 @@ JSON 模板、Liquid schema 和脚本输出也应在提交前解析或执行 dry
 
 ### Store 和 scope 校验
 
-将 `.env.example` 复制为 `.env.local` 并填入当前项目的 Admin token 后，可以直接运行：
+将 `.env.example` 复制为 `.env.local`，填入当前项目的 Admin token 和 App Client ID 后，完整建站项目先运行：
+
+```bash
+npm run preflight:shopify -- --store <store>.myshopify.com
+```
+
+这项只读检查会确认目标店铺、执行 App 身份与完整建站权限包。仅需验证某项操作时，可以运行：
 
 ```bash
 npm run verify:shopify -- \
@@ -169,7 +175,7 @@ npm run verify:shopify -- \
   --require-scope read_products
 ```
 
-命令只输出店铺、API 版本、已安装 scopes 和缺失 scopes，不会输出 token。
+命令输出店铺、App 身份、API 版本、已安装 scopes、缺失 scopes 和下一步提示，不会输出 token。首次安装或增权仍需完成 Shopify 授权；本检查不会自动创建 App 或申请权限。
 
 ## 常见问题
 
