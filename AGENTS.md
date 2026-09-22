@@ -42,14 +42,17 @@ promoting them here.
   Collections, Menus, Publications, or Metaobjects automation.
 - Shopify CLI is appropriate for `app build`, `app deploy`, `theme check`,
   `theme dev`, and `theme push`.
-- At project initialization, map the expected Admin GraphQL operations to scopes
-  and the app identity that will execute them. For projects covering catalog
-  writes, Online Store publication, menus, content, and Metaobjects, consider
-  `write_products`, `write_publications`,
-  `write_online_store_navigation`, `write_content`, `write_metaobjects`, and
-  `write_metaobject_definitions`; remove any scope the planned work does not
-  need. Add inventory, location, or Files scopes only when those operations are
-  in scope. A write scope includes the corresponding read capability.
+- For a full store-building project, request the broad site-building scope set
+  at initial app installation: `write_products`, `write_publications`,
+  `write_online_store_navigation`, `write_content`, `write_metaobjects`,
+  `write_metaobject_definitions`, `write_files`, `write_inventory`, and
+  `read_locations`. This covers catalog, collections, publication, navigation,
+  pages/blogs/articles, structured content, Shopify Files, and inventory work
+  without repeated scope changes during the build. A write scope includes its
+  corresponding read capability, so explicit duplicate `read_*` declarations
+  are not needed. Do not add customer, order, payment, or other unrelated
+  operational scopes unless the project later requires them. Theme-only
+  projects do not need this Admin GraphQL scope set.
 - This template has no `shopify.app.toml`. Theme-only projects do not need an
   app solely to request the candidate scopes. If Admin GraphQL resource work is
   planned, create or link this project's own Shopify app before validating or
