@@ -35,6 +35,32 @@ promoting them here.
   store, identity, action, stable handle/GID, counts, errors, and verification
   result.
 
+## Testing Policy
+
+- By default, do not create, run, repair, or delegate unit, integration, or
+  end-to-end tests. Only do testing work when the user explicitly requests it;
+  never add unit tests after implementing a feature.
+  The existing storefront smoke test is available for opt-in use, not a
+  mandatory step in every task.
+- When testing is explicitly requested, strongly prefer end-to-end tests of
+  complex storefront behavior on the named Draft/Development Theme over
+  isolated unit tests. Use the smallest relevant flow during development;
+  reserve the full end-to-end suite for the end of the task, and run it only
+  when the user has authorized testing. Do not treat a passing browser flow as
+  proof of Admin scopes, publication, or remote data state.
+- If an isolated test is genuinely necessary and explicitly requested, write
+  down the plausible failure modes and define its scope before implementing
+  the feature or test. Keep that test scoped to those failure modes; do not
+  add a unit-test suite by default.
+- At the end of an authorized end-to-end run, retain a reproducible,
+  verifiable artifact: the exact command and target store/theme, code revision,
+  test result, and relevant trace or screenshot paths. Redact secrets and keep
+  generated artifacts out of Git unless explicitly requested. If the run
+  cannot complete, record the blocker rather than reporting a pass.
+- Theme Check, syntax/JSON checks, Admin GraphQL readback, and targeted
+  storefront browser inspection remain separate verification activities.
+  Report which were performed and which tests were not run.
+
 ## Authentication, Scopes, and Secrets
 
 - For merchant-owned Products, Collections, Menus, Pages, Blogs, Articles,
