@@ -102,7 +102,7 @@ git diff --check
 - 需要使用的 publication/channel
 - 本次是否允许修改线上资源
 
-Shopify CLI 负责 App/theme 生命周期；Admin GraphQL 负责 Products、Collections、Menus、Publications、Pages、Articles 和 Metaobjects 等资源；不要混用身份。需要通过浏览器访问 Shopify Admin 时，必须使用已登录的 SunBrowser，不要切换到 IAB 或其他浏览器 profile。
+Shopify CLI 负责 App/theme 生命周期；Admin GraphQL 负责 Products、Collections、Menus、Publications、Pages、Articles 和 Metaobjects 等资源；不要混用身份。默认通过当前操作者的 Shopify Partners 账号申请目标店铺权限，再使用 Shopify CLI/Admin GraphQL 开发。只有用户明确指定时，才使用 SunBrowser；不要把它作为默认前置条件。
 
 ### 2. 建立原生 Shopify 数据
 
@@ -199,7 +199,7 @@ CLI store auth 路径先重新运行 `npm run connect:shopify -- --store <store>
 1. `shopify.app.toml` 是否包含所需 scope。
 2. 是否完成 `shopify app build` 和 `shopify app deploy --allow-updates`。
 3. 当前店铺的 `currentAppInstallation.accessScopes` 是否真的更新。
-4. 是否需要在已登录的 SunBrowser 会话中完成重新授权。
+4. 是否需要通过 Shopify Partners 重新申请或批准目标店铺权限；只有用户明确指定 SunBrowser 时，才检查对应浏览器会话。
 
 不要通过换用另一个项目的 token 来绕过权限问题。
 

@@ -112,14 +112,15 @@ promoting them here.
 - In non-interactive environments, app deployment needs an explicit approval
   flag, normally `shopify app deploy --allow-updates`.
 - If CLI app installation only supports an organization dev store, do not
-  mistake that for access to an arbitrary store. Use the normal OAuth flow in
-  the already authenticated SunBrowser session or ask for the required manual
-  authorization.
+  mistake that for access to an arbitrary store. Use the current operator's
+  Shopify Partners account to request or approve access to the target store,
+  then complete the normal Shopify CLI authorization flow. Use SunBrowser only
+  when the user explicitly requests it for that task.
 - Keep credentials in ignored `.env.local`/`.env.*` files or an OS credential
   store. Never print, commit, screenshot, or put tokens/passwords in command
   URLs, Liquid, audit files, or generated reports. A storefront password may
-  be entered for the current SunBrowser session, but must not be persisted
-  without explicit confirmation.
+  be entered through the explicitly selected browser session when required, but
+  must not be persisted without explicit confirmation.
 - Keep captured reference source files in `references/` when they are required
   to reproduce a project. Ignore only regenerable artifacts such as `output/`
   and `references/output/`; do not ignore the entire `references/` directory.
@@ -273,10 +274,10 @@ Use this order of operations:
    App plus Admin GraphQL when it owns the target resources.
 3. Shopify CLI for app/theme lifecycle.
 4. Playwright for storefront interaction and screenshot QA.
-5. Computer Use only for authentication or UI-only work. When Shopify Admin
-   access is needed through a browser, SunBrowser is required: use the
-   authenticated SunBrowser session and do not switch to an in-app browser or
-   another browser profile for the same task.
+5. Computer Use only for authentication or UI-only work. Default to Shopify
+   Partners and Shopify CLI/Admin GraphQL for store access. When browser access
+   is genuinely required, use the available authenticated browser; use
+   SunBrowser only when the user explicitly specifies it for the task.
 
 ## Theme Access and Deployment
 
