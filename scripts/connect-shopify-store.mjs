@@ -6,6 +6,7 @@ const SCOPES = [
   'write_files', 'write_inventory', 'read_locations',
 ];
 const QUERY = 'query StoreAccess { shop { myshopifyDomain } currentAppInstallation { app { apiKey title } accessScopes { handle } } }';
+const SHOPIFY_CLI = process.platform === 'win32' ? 'shopify.cmd' : 'shopify';
 
 function storeFromArgs(argv) {
   const index = argv.indexOf('--store');
@@ -27,7 +28,7 @@ function findData(value) {
 }
 
 function check(store) {
-  const run = spawnSync('shopify', [
+  const run = spawnSync(SHOPIFY_CLI, [
     'store', 'execute', '--store', store, '--query', QUERY, '--json',
   ], { encoding: 'utf8' });
   if (run.error) throw run.error;
@@ -64,7 +65,7 @@ try {
   if (!result.ok) {
     console.error(result.reason);
     if (!result.retryAuth) throw new Error('Shopify CLI verification failed; authorization was not changed.');
-    const auth = spawnSync('shopify', [
+    const auth = spawnSync(SHOPIFY_CLI, [
       'store', 'auth', '--store', store, '--scopes', SCOPES.join(','),
     ], { stdio: 'inherit' });
     if (auth.error) throw auth.error;

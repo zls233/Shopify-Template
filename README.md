@@ -65,6 +65,11 @@ Collection product grid
 
 不要把 token、密码、`.env` 文件、浏览器缓存或无必要的大型生成媒体放进仓库。
 
+从 Windows 迁移到 macOS/Linux 时，保留 `references/` 中的源参考文件并提交到 Git；
+`output/` 和 `references/output/` 是可重新生成的审计与截图产物，不应提交。Git 已统一
+使用 UTF-8 和 LF 换行，避免跨系统迁移产生整文件 diff。运行脚本时使用当前系统 PATH
+中的 `shopify` CLI，不要在脚本中写死 Windows 用户目录。
+
 ## 新项目初始化
 
 1. 从本模板创建项目副本，并确认目标 Shopify 店铺域名。

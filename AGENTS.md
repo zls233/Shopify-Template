@@ -120,6 +120,11 @@ promoting them here.
   URLs, Liquid, audit files, or generated reports. A storefront password may
   be entered for the current SunBrowser session, but must not be persisted
   without explicit confirmation.
+- Keep captured reference source files in `references/` when they are required
+  to reproduce a project. Ignore only regenerable artifacts such as `output/`
+  and `references/output/`; do not ignore the entire `references/` directory.
+  Scripts must resolve the Shopify CLI from PATH and must not embed a
+  Windows-specific user directory or shell command.
 
 ## Shopify Data Model
 
