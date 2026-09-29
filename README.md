@@ -74,7 +74,7 @@ Collection product grid
 
 1. 从本模板创建项目副本，并确认目标 Shopify 店铺域名。
 2. 使用 Shopify CLI 初始化 `theme/`。店铺自有资源可使用 CLI store auth/execute；需要 App 自有 schema 时再创建 `shopify-app/`。
-3. 创建本地未跟踪的 `.env.local`，只保存当前项目所需的店铺和 App 配置。不要把凭据发到聊天中或写入脚本。
+3. 使用已获目标店铺 Themes 权限的 Shopify Partner 账户登录 Shopify CLI；主题开发直接使用该登录态，无须 Theme Access token。创建本地未跟踪的 `.env.local`，只保存当前项目所需的店铺和 App 配置。不要把凭据发到聊天中或写入脚本。
 4. 为所有 mutation 脚本设置显式 `--store`，先执行 dry-run，再进行写入。
 5. 完整建站项目先运行 `connect:shopify`（CLI 路径）或 `preflight:shopify`（项目 App 路径），核对目标店铺、执行身份与实际获批 scopes。
 6. 默认使用 Draft/Development Theme，完成验证后再由用户决定是否发布。
@@ -102,7 +102,7 @@ git diff --check
 - 需要使用的 publication/channel
 - 本次是否允许修改线上资源
 
-Shopify CLI 负责 App/theme 生命周期；Admin GraphQL 负责 Products、Collections、Menus、Publications、Pages、Articles 和 Metaobjects 等资源；不要混用身份。默认通过当前操作者的 Shopify Partners 账号申请目标店铺权限，再使用 Shopify CLI/Admin GraphQL 开发。只有用户明确指定时，才使用 SunBrowser；不要把它作为默认前置条件。
+Shopify CLI 负责 App/theme 生命周期；Admin GraphQL 负责 Products、Collections、Menus、Publications、Pages、Articles 和 Metaobjects 等资源；不要混用身份。默认通过当前操作者已获目标店铺 Themes 权限的 Shopify Partners 账号登录 Shopify CLI 开发主题，不要求 `SHOPIFY_CLI_THEME_TOKEN` 或 Theme Access；Admin GraphQL 的实际授权和 scopes 仍独立核对。只有用户明确指定时，才使用 SunBrowser；不要把它作为默认前置条件。
 
 ### 2. 建立原生 Shopify 数据
 
