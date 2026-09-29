@@ -286,36 +286,14 @@ Use this order of operations:
    is genuinely required, use the available authenticated browser; use
    SunBrowser only when the user explicitly specifies it for the task.
 
-## Theme Access and Deployment
+## Partner CLI Authentication and Deployment
 
-- Prefer a Theme Access token for Shopify CLI theme operations. Load
-  `SHOPIFY_CLI_THEME_TOKEN` from an ignored `.env.local` or an OS credential
-  store into the command environment without printing it. A storefront password
-  is not a Theme Access token. Do not start `shopify auth login` or change the
-  selected account unless the user explicitly authorizes account-based login.
-- Immediately before any operation targeting the live theme, run
-  `shopify theme list --store <store>.myshopify.com --json` using Theme Access
-  and identify the current live theme ID from that response. Do not trust a
-  theme ID saved in a README, report, environment file, or prior session.
-- For an explicitly authorized live file change, target that freshly resolved
-  theme ID and use `--allow-live --nodelete`; add `--only` for every changed
-  file when the change is narrow. Never treat these flags as permission to
-  publish or alter unrelated live theme files.
-- After a live push, list themes again to confirm the target remains live.
-  Pull changed files into an isolated temporary directory with explicit
-  `--store`, `--theme`, and `--only` flags, then compare their SHA-256 hashes
-  with the local source files. Also verify the affected storefront pages on
-  desktop and mobile. A successful upload or matching hash alone does not
-  prove that the visible result is correct.
-- If Theme CLI reports `401 Service is not valid for authentication`, first
-  check that the intended Theme Access token is present in the command
-  environment without displaying it, that it belongs to the target store and
-  has the needed theme access, and that no stale theme process is running.
-  Retry with explicit `--store`, `--path`, and `--theme`. If Theme Access cannot
-  be restored, report the authentication blocker; use account-based
-  `shopify auth logout` / `shopify auth login` only when the user has explicitly
-  authorized that path. Theme authentication never authorizes using the CLI
-  identity for Admin GraphQL data mutations.
+- Use the current operator's authenticated Shopify Partner account for Shopify CLI theme operations. Confirm that the account has approved Partner / Collaborator access to the exact target store, including the Themes permission. Do not require Theme Access, `SHOPIFY_CLI_THEME_TOKEN`, or `--password` for interactive development. Run `shopify theme list --store <store>.myshopify.com --json` to verify actual theme access before writing.
+- If the CLI session is missing or expired, use the normal Shopify account login flow for the current operator, then repeat the theme list check. Never switch to a merchant owner's account or use another store's credentials. Theme permissions do not replace Admin GraphQL authorization: keep store auth and effective scopes checks for resource mutations.
+- Immediately before any operation targeting the live theme, run `shopify theme list --store <store>.myshopify.com --json` through the verified Partner session and identify the current live theme ID. Do not trust a theme ID saved in a README, report, environment file, or prior session.
+- For an explicitly authorized live file change, target that freshly resolved theme ID and use `--allow-live --nodelete`; add `--only` for every changed file when the change is narrow. Never treat these flags as permission to publish or alter unrelated live theme files.
+- After a live push, list themes again to confirm the target remains live. Pull changed files into an isolated temporary directory with explicit `--store`, `--theme`, and `--only` flags, then compare their SHA-256 hashes with the local source files. Also verify the affected storefront pages on desktop and mobile.
+- If Theme CLI reports authentication failure, first verify the selected Shopify CLI account, target store, approved Partner / Collaborator relationship, and Themes permission; rerun `shopify theme list --store <store>.myshopify.com --json`. Reauthenticate only as the authorized operator when required. Report missing permissions or unresolved authentication as blockers. Do not introduce a Theme Access token as a fallback or mistake theme authentication for Admin GraphQL scopes.
 
 Stop a long-running `theme dev` watcher before patching files if it holds a
 lock or blocks writes; restart it with the explicit Draft Theme after edits.
