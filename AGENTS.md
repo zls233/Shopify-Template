@@ -1,5 +1,12 @@
 # Shopify Theme Project Instructions
 
+## Project Progress Memory
+
+Project copies should contain a repository-level `PROJECT_MEMORY.md`. Read it
+before starting work and update it when a task changes project state. Keep
+store-specific values in the project copy; this template file contains only
+placeholders.
+
 These instructions apply to the whole Shopify template repository. The
 template should make new stores repeatable, auditable, and safe to work on.
 

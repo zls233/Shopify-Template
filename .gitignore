@@ -8,3 +8,4 @@ test-results/
 output/
 references/output/
 .shopify/
+.playwright-cli/
