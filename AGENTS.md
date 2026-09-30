@@ -125,9 +125,13 @@ promoting them here.
   when the user explicitly requests it for that task.
 - Keep credentials in ignored `.env.local`/`.env.*` files or an OS credential
   store. Never print, commit, screenshot, or put tokens/passwords in command
-  URLs, Liquid, audit files, or generated reports. A storefront password may
-  be entered through the explicitly selected browser session when required, but
-  must not be persisted without explicit confirmation.
+  URLs, Liquid, audit files, or generated reports. During project initialization,
+  determine whether storefront password protection is enabled. Admin GraphQL may
+  be used to read the protection state, but it does not expose the password value.
+  When protection is enabled, use the already-authorized Shopify Admin session to
+  read the current Online Store / Store access password and write it directly to
+  `SHOPIFY_STOREFRONT_PASSWORD` in `.env.local` without echoing the value. Record
+  only whether the variable is configured. Never commit `.env.local`.
 - Keep captured reference source files in `references/` when they are required
   to reproduce a project. Ignore only regenerable artifacts such as `output/`
   and `references/output/`; do not ignore the entire `references/` directory.
