@@ -63,7 +63,7 @@ Collection product grid
 └── output/                # 生成的审计报告、截图和 QA 产物
 ```
 
-不要把 token、密码、`.env` 文件、浏览器缓存或无必要的大型生成媒体放进仓库。
+不要把 token、密码、`.env` 文件、浏览器缓存或无必要的大型生成媒体放进仓库。storefront 访问密码只能保存在被 Git 忽略的本地 `.env.local`（键名 `SHOPIFY_STOREFRONT_PASSWORD`）或 OS 凭据存储中。
 
 从 Windows 迁移到 macOS/Linux 时，保留 `references/` 中的源参考文件并提交到 Git；
 `output/` 和 `references/output/` 是可重新生成的审计与截图产物，不应提交。Git 已统一
@@ -74,7 +74,7 @@ Collection product grid
 
 1. 从本模板创建项目副本，并确认目标 Shopify 店铺域名。
 2. 使用 Shopify CLI 初始化 `theme/`。店铺自有资源可使用 CLI store auth/execute；需要 App 自有 schema 时再创建 `shopify-app/`。
-3. 使用已获目标店铺 Themes 权限的 Shopify Partner 账户登录 Shopify CLI；主题开发直接使用该登录态，无须 Theme Access token。创建本地未跟踪的 `.env.local`，只保存当前项目所需的店铺和 App 配置。不要把凭据发到聊天中或写入脚本。
+3. 使用已获目标店铺 Themes 权限的 Shopify Partner 账户登录 Shopify CLI；主题开发直接使用该登录态，无须 Theme Access token。创建本地未跟踪的 `.env.local`，只保存当前项目所需的店铺、App 配置和 storefront 访问密码。若目标店铺启用了 Private mode / storefront password，先确认密码保护状态，再从已授权的 Shopify Admin `Online Store > Preferences`（或当前 Store access 页面）读取当前访问密码并写入 `SHOPIFY_STOREFRONT_PASSWORD`。不要在终端输出、聊天、报告或日志中回显密码。
 4. 为所有 mutation 脚本设置显式 `--store`，先执行 dry-run，再进行写入。
 5. 完整建站项目先运行 `connect:shopify`（CLI 路径）或 `preflight:shopify`（项目 App 路径），核对目标店铺、执行身份与实际获批 scopes。
 6. 默认使用 Draft/Development Theme，完成验证后再由用户决定是否发布。
