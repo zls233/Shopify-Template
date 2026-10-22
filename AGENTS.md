@@ -123,15 +123,29 @@ promoting them here.
   Shopify Partners account to request or approve access to the target store,
   then complete the normal Shopify CLI authorization flow. Use SunBrowser only
   when the user explicitly requests it for that task.
-- Keep credentials in ignored `.env.local`/`.env.*` files or an OS credential
-  store. Never print, commit, screenshot, or put tokens/passwords in command
-  URLs, Liquid, audit files, or generated reports. During project initialization,
-  determine whether storefront password protection is enabled. Admin GraphQL may
-  be used to read the protection state, but it does not expose the password value.
-  When protection is enabled, use the already-authorized Shopify Admin session to
-  read the current Online Store / Store access password and write it directly to
-  `SHOPIFY_STOREFRONT_PASSWORD` in `.env.local` without echoing the value. Record
-  only whether the variable is configured. Never commit `.env.local`.
+- Keep privileged credentials in ignored `.env.local`/`.env.*` files or an OS
+  credential store. Store the storefront visitor password in the project-root
+  ignored `.env` as `SHOPIFY_STOREFRONT_PASSWORD`, with
+  `SHOPIFY_STORE_DOMAIN` set to the verified target `*.myshopify.com` domain.
+  Never print, commit, screenshot, or put tokens/passwords in command URLs,
+  Liquid, audit files, or generated reports.
+- During initialization, the Agent must acquire the existing storefront visitor
+  password autonomously when password protection is enabled. First verify the
+  exact target store and protection state. Check whether the installed Shopify
+  CLI or authorized Admin API actually supports reading the existing password;
+  a protection-state query alone does not return its value. When unavailable,
+  use the operator's already-authorized Shopify Admin browser session and
+  navigate to Online Store > Preferences > Password protection (or its current
+  Store access location), reading the current value through UI automation.
+  Never create/reset a password, turn protection on/off, or bypass authentication.
+- Update only `SHOPIFY_STOREFRONT_PASSWORD` and `SHOPIFY_STORE_DOMAIN` in
+  existing `.env` (create it if absent), preserve other entries, and verify
+  the captured password against the protected storefront without disclosing
+  it in terminal output, screenshots or logs. If protection is disabled,
+  clear any stale password key and report `not_required`. If the authorized
+  session cannot access the field, mark `blocked`, record only the reason,
+  and proceed with independent tasks rather than asking for a manual copy.
+  Do not replace Partner CLI authentication with a storefront password.
 - Keep captured reference source files in `references/` when they are required
   to reproduce a project. Ignore only regenerable artifacts such as `output/`
   and `references/output/`; do not ignore the entire `references/` directory.
