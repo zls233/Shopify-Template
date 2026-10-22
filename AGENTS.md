@@ -379,3 +379,16 @@ Every Shopify task should finish with:
 - Draft vs live theme/publication state;
 - remaining manual approval, reauthorization, login, or publication steps;
 - known limitations and the exact next command or action to resume safely.
+
+
+## Task Completion Contract
+
+This section applies to every project task, including numbered prompts run from Shopify-Prompts. It supplements (and does not expand) the authorization and testing policies above.
+
+- At task start, load the selected prompt and relevant sub-prompts, the project memory, and the applicable acceptance criteria. Expand the requested scope into a persisted task checklist (`TASK_CHECKLIST.md` unless the project already maintains an equivalent), with `id`, requirement, evidence, status, blocker, and next action.
+- Use `pending / in_progress / verified / failed / blocked / excluded / not_run` for item status. Do not silently omit applicable requirements. Use `excluded` only with an actual scope or policy reason; `not_run` and `blocked` never mean passed.
+- Complete work through an evidence-backed loop: implement, inspect local and relevant remote results, compare against the requirement, repair differences, and recheck. A generated file, successful command, valid JSON, successful API response, or sample result by itself does not prove end-to-end completion.
+- If a task fails, continue with bounded targeted recovery and independently actionable items. Preserve existing verified outputs; reconcile remote state before retrying mutations. Do not repeatedly retry unchanged hard blockers or perform unauthorized Live publication, password changes, payment operations, or testing.
+- Keep the checklist and `PROJECT_MEMORY.md` synchronized with the verified store/theme identity, artifacts, remaining discrepancies, blockers, and a precise resumable next action. On a new chat, resume from verified state rather than restarting or accepting old completion claims without evidence.
+- Overall `completed` is allowed only when every in-scope applicable requirement is `verified` and all non-applicable items are legitimately `excluded`. Otherwise report `partial` or `blocked` as appropriate, with concrete evidence and unfinished items.
+- Respect the Testing Policy: normal readback, syntax validation and targeted inspection are verification; creating/running automated test suites still requires the user's explicit testing instruction. A task cannot be called verified if its required acceptance evidence is missing; report the gap rather than inventing a pass.
