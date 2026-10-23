@@ -217,6 +217,12 @@ Keep the resource graph as the source of truth:
 
 ## Content Pages and Blogs
 
+## Autonomous Missing-Content Completion
+
+When a reference site has no corresponding page or a project is missing copy for an in-scope storefront information page, create the missing content rather than stopping to ask for supplied or pre-approved text. Reuse verified merchant/store content first, then write original, brand-appropriate descriptions and neutral general text for the required About, Contact, and eight Footer destinations. Prefer Shopify's built-in legal policy templates when applicable. Implement actual Shopify Pages or supported Policies with stable handles; bind real links, read back saved resources and verify the Draft storefront on desktop and mobile.
+
+Generated policy and service text is a draft for later business/legal review, not proof of merchant approval. Do not invent concrete company identity, address, customer service email, returns deadlines, shipping prices/dates, personal-data handling, product specifications, or other factual commitments. Use a real Shopify contact form when no verified contact details exist. Lack of pre-approved wording alone must not block *technical page creation*, while missing real write access or a failed remote readback still can. Shared Page/Policy updates require valid store permissions; this does not authorize Live Theme publication or unrelated operational changes.
+
 - Footer links must resolve to real Shopify Pages, Blogs, and Articles. Use a
   stable handle mapping and an idempotent sync script rather than fake content
   or hardcoded 404 fallbacks.
