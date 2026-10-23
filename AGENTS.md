@@ -224,8 +224,9 @@ When a reference site has no corresponding page or a project is missing copy for
 Generated policy and service text is a draft for later business/legal review, not proof of merchant approval. Do not invent concrete company identity, address, customer service email, returns deadlines, shipping prices/dates, personal-data handling, product specifications, or other factual commitments. Use a real Shopify contact form when no verified contact details exist. Lack of pre-approved wording alone must not block *technical page creation*, while missing real write access or a failed remote readback still can. Shared Page/Policy updates require valid store permissions; this does not authorize Live Theme publication or unrelated operational changes.
 
 - Footer links must resolve to real Shopify Pages, Blogs, and Articles. Use a
-  stable handle mapping and an idempotent sync script rather than fake content
-  or hardcoded 404 fallbacks.
+  stable handle mapping and an idempotent sync script. If the required page
+  does not exist, autonomously write suitable original copy and create the
+  real Page/Policy resource instead of using empty placeholders or 404 fallbacks.
 - Content scripts must fail safely before mutation when the installed app lacks
   the ability to write content. Do not require both scope names when
   `write_content` already grants read capability. A theme can retain an official
