@@ -223,6 +223,12 @@ CLI store auth 路径先重新运行 `npm run connect:shopify -- --store <store>
 
 先检查 stale Git 进程、`.git/index.lock` 和大型对象。确认 `.gitignore` 没有漏掉缓存、截图和生成媒体；确实需要跟踪的大文件使用 Git LFS。推送后核验远程 commit hash 和仓库可见性。
 
+## 第三方支付 Logo 交接（主题团队负责素材）
+
+未来的第三方结账系统可能通过 `store_logo` 或类似字段显示品牌 Logo，**不会自动沿用 Shopify Theme 的 Header Logo 或 favicon**。因此每个项目需单独准备品牌主标识图片并在 `docs/payment-branding-handoff.md` 填写来源、图片文件、SHA-256、格式、经验证的绝对 HTTPS URL、目标 Store/Theme 及状态；详细要求见 `AGENTS.md`。
+
+Logo 应与原站 Header 字标匹配，不能取 `menu-*.jpg`、商品或推广图。优先交付稳定的 Shopify Files 图片 URL；使用主题资源时需在 Live 发布后重新确认 URL，不复制旧 Theme ID。主题交付状态 `asset_handoff` 与支付方接入后的 `checkout_logo_display` 分别报告；**支付方暂未接入，不影响已完成的主题 Logo 素材交付**。支付跳转、代理脚本和支付映射仍由接入方负责。
+
 ## 交付前检查清单
 
 - [ ] Store、App identity、scopes 和 Theme ID 已记录。
