@@ -33,6 +33,19 @@ Last updated: `YYYY-MM-DD`
 - Pages/blogs/articles: `<handles and GIDs>`
 - Metaobjects/files/inventory: `<status>`
 
+
+## External checkout brand Logo handoff
+
+- Brand Logo source: `references/_shared/branding/checkout-logo-source.json` (or documented equivalent)
+- Dedicated asset: `theme/assets/checkout-brand-logo.<ext>` (or documented equivalent)
+- Handoff: `docs/payment-branding-handoff.md`
+- Hosting/absolute URL: `<Shopify Files URL | Live theme asset URL | pending_live_url>`
+- Asset source hash / MIME / dimensions: `<record>`
+- `asset_handoff`: `<verified / failed / blocked>`
+- `checkout_logo_display`: `<verified / failed / blocked / not_run / excluded>`
+- External integrator action: `<point store_logo or equivalent at the handed-off URL; verify after integration>`
+- Never infer external checkout branding from favicon or Header Logo alone.
+
 ## Known limits and blockers
 
 - `<password protection, missing scopes, missing approved content, empty catalog, or N/A>`
