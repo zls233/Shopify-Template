@@ -42,6 +42,50 @@ promoting them here.
   store, identity, action, stable handle/GID, counts, errors, and verification
   result.
 
+
+## Brand Logo Handoff for External Checkout Integrators
+
+The team building the Theme supplies the brand identity asset; a separate
+integrator owns third-party checkout redirects, proxy scripts, payment forms,
+and any `store_logo` (or equivalent) mapping. Prepare the handoff **before**
+that integration exists. Do not treat the storefront Header logo or favicon as
+proof that an external checkout will show the correct brand.
+
+- Capture the actual brand wordmark/logo from the reference Header (SVG/PNG
+  preferred), with provenance and hash. Distinguish it from favicon, navigation
+  promotion artwork (`menu-*.jpg`), banner images and product photography.
+  When the Header is only text, create a standalone transparent logo image from
+  verified branding evidence; do not guess by picking the first page image.
+- Place a dedicated image in the project's `theme/assets/checkout-brand-logo.*`
+  or an equivalent documented path. Verify that the image parses, matches the
+  brand, preserves its proportions, and remains legible on a light background.
+  If a dark-background variant is necessary, document it separately.
+- Prefer a store-owned Shopify Files URL when the project's existing
+  authorization allows uploading/readback, so future theme switches do not
+  invalidate the URL. Otherwise hand off the Theme asset and its path, and
+  resolve the **final absolute HTTPS URL on the actual Live Theme** after
+  publishing. Never hardcode a previous store, draft theme ID or
+  `/cdn/shop/t/<id>/` path as a permanent asset location. If the storefront
+  is not publicly accessible, record `pending_live_url`, not a fake success.
+- Maintain `docs/payment-branding-handoff.md` in each project with brand,
+  store, source, local asset path, SHA-256, MIME, dimensions/viewBox, hosting
+  strategy, absolute URL or pending state, tested HTTP/image results, theme
+  role, appropriate background, and action for the external integrator.
+  Reference that document and its status in `PROJECT_MEMORY.md`.
+- The normal Theme QA verifies asset integrity and handoff readiness. **Only
+  after an external checkout actually exists**, and only within an authorized
+  non-payment browser inspection, separately verify that the external
+  checkout's visible logo and `store_logo` (if inspectable) match the handed-off
+  asset rather than a fallback image. Record `asset_handoff` and
+  `checkout_logo_display` independently; the latter is `not_run` before
+  integration. An absent external checkout must not fail otherwise-complete
+  Theme work.
+- Do not add or edit an external integrator's checkout/proxy scripts, routing,
+  payment settings, or authorization as part of preparing this logo handoff.
+  If those scripts later select a wrong image, provide the correct URL and
+  reproducible evidence to the integrator; alter them only with separate
+  authorization.
+
 ## Testing Policy
 
 - By default, do not create, run, repair, or delegate unit, integration, or
