@@ -35,7 +35,10 @@
 
 - `asset_handoff`: `pending` (later: `verified / failed / blocked`)
 - `checkout_logo_display`: `not_run` (later: `verified / failed / blocked / not_run / excluded`)
-- External integrator action: set their explicit checkout brand Logo URL (`store_logo` or system-specific equivalent) to the **verified dedicated image URL**; disable unsafe fallback to unrelated storefront images where their system supports it.
+- External integrator action: set their explicit checkout brand Logo URL to the **verified dedicated image URL**. If this integration's confirmed Logo URL variable is `_z9`, **configure `_z9` to this exact URL, not an empty string**. If the runtime uses `store_logo` or a renamed/minified field, locate and configure that real field; never create an unused `_z9` just to satisfy a check. Disable unsafe fallback to menu images or products.
+- Actual integration field: `<_z9 | store_logo | confirmed alternate | pending_integration>`
+- `payment_logo_mapping`: `pending_integration` (later: `verified / failed / blocked / pending_integration`)
+- Mapping evidence: `<runtime value/image URL match, integration revision, browser evidence, date>`
 - Theme team's action: provide the asset, URL and verification evidence. Do not change an external payment/proxy script without separate authorization.
 - Final post-integration check: Desktop and Mobile checkout header logo matches this asset; optional safe `store_logo` request inspection; no payment, no order, no personal data.
 - Integration owner / evidence / remaining action: `<record>`
