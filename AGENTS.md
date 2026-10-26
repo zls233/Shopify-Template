@@ -80,11 +80,20 @@ proof that an external checkout will show the correct brand.
   `checkout_logo_display` independently; the latter is `not_run` before
   integration. An absent external checkout must not fail otherwise-complete
   Theme work.
-- Do not add or edit an external integrator's checkout/proxy scripts, routing,
-  payment settings, or authorization as part of preparing this logo handoff.
-  If those scripts later select a wrong image, provide the correct URL and
-  reproducible evidence to the integrator; alter them only with separate
-  authorization.
+- For a third-party payment integration that is **separately authorized** and
+  whose source/configuration is accessible, configure the actual Logo URL field
+  rather than merely handing over a URL. In the known integration where
+  `_z9` is the actual runtime Logo URL variable, assign the verified absolute
+  HTTPS brand Logo URL to `_z9`, inspect its final runtime value, and verify
+  that it is neither empty nor falling back to menu banners/product images.
+  If the field has been renamed or the integration uses `store_logo` or
+  another parameter, identify the real mapping instead of adding an inert
+  `_z9` variable. Record `payment_logo_mapping: verified / failed / blocked /
+  pending_integration` separately from asset handoff and visual display.
+- Preparing the Theme alone does not authorize changing third-party scripts,
+  checkout/proxy routing, payment settings, or credentials. For an inaccessible
+  or unauthorized integration, record the exact pending mapping and owner;
+  never claim `_z9` has been configured just because the asset exists.
 
 ## Testing Policy
 
