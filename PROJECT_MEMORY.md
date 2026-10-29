@@ -21,6 +21,14 @@ Last updated: `YYYY-MM-DD`
 - Default branch: `<branch>`
 - Secrets stay in ignored `.env.local` or an OS credential store.
 
+## FAST core readiness (updated at stage end)
+
+- Execution mode: `FAST | FULL`; stage result: `completed_core | completed_full | partial | blocked_core`.
+- P0 blocking issues: `<count and exact issues>`; P1 affecting launch: `<count>`; P2 / nonblocking P1 deferred: `<short list>`.
+- Evidence reuse: `<current store/theme/input hash and proof>`; only rerun changed/failed checks.
+- Browser smoke: `<core pages sampled and desktop/mobile coverage, not whole-site UI claims>`.
+- Next precise unfinished action: `<command or N/A>`.
+
 ## Stage execution checkpoint
 
 - Stage entry / canonical Prompt path: `<ID/path>`

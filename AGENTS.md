@@ -1,8 +1,19 @@
 # Shopify Theme Project Instructions
 
-## Mandatory stage completion (Shopify-Prompts FAST)
+## FAST delivery and efficient execution (default)
 
-Each numbered FAST entry is a complete stage, not a plan or a sample. Read the corresponding current Shopify-Prompts entry, subprompts, and `EXECUTION_RULES.md`; turn every applicable acceptance criterion into project `TASK_CHECKLIST.md`. Persist phase progress and current blockers to `agent-evidence/stage-state.json` after each batch. Continue independently actionable items without waiting for a new user prompt. Retry transient failures at most three times with backoff and readback; on persistent hard blockers save an exact resume command and evidence. Never claim `completed` if any applicable item is unverified. Skip verified work on resume only after comparing current store and artifact hashes. Keep tool output concise; summarize files instead of dumping DOM, base64 or full JSON into the model context.
+This template follows `Shopify-Prompts/STAGE_COMPLETION_CONTRACT.md` v2 when that repository is available. FAST aims for a working, correct storefront rather than exhausting every optional visual or documentary check. The current store, explicit user scope and permission boundaries remain authoritative.
+
+- Status: `completed_core` when all critical storefront functionality and relevant data requirements are verified, with optional P2 and non-blocking P1 items explicitly listed as `deferred`; `completed_full` only for complete requested detailed QA; `partial` or `blocked_core` when important functionality/data cannot be completed. Do not call untested or uncollected data verified.
+- Priority P0: wrong target store, unsafe mutation, significant data/variant/price errors, broken core navigation/cart/checkout entry, missing actual user-requested product status/inventory updates. Fix these before declaring a core-complete stage.
+- Priority P1: important layout, category visibility or content links. Repair if they impair current acceptance/usability; otherwise record follow-up with actual impact.
+- Priority P2: minor pixel/motion/style deviations, offline source-replay differences, historical reference deep dives, extra viewport screenshots, non-core SEO; do not block FAST for these. Explicit FULL or pixel-perfect requests override.
+- Start by reading existing `PROJECT_MEMORY.md`, the current stage/checkpoint, minimal relevant Prompt sections and Git diff. Confirm the Store / identity / Draft role once per relevant mutation phase. Do not repeatedly scan unchanged repository files, request unchanged permissions or re-check the same validated resources.
+- Use existing `TASK_CHECKLIST.md` (or equivalent) for **only the active P0/P1 work and deferred summary**. For long/bulk operations, keep `agent-evidence/stage-state.json` with scope, hashes, next batch, verified and remaining IDs. Update the project memory at the end, not after every trivial UI action.
+- Prefer data-level/API bulk verification for all affected products, variants, available inventory and catalog membership, and **representative** UI smoke checks for Home/PLP/PDP/Cart on desktop/mobile. Recheck affected pages when changed; no per-product screenshots, no per-classification browser loops unless the user explicitly requests them.
+- For reference/visual work, at most two productive visual adjustment passes per main template in FAST. Do not run full offline archives, exhaustive viewport matrices, repetitive screenshot/DOM captures or unrelated documentation/test suites unless a concrete failure or explicit request warrants them.
+- Batch API mutations safely, retry transient issues with bounded backoff and readback, resume only unfinished deltas. On persistent blockers, save a precise resume entry and finish independent work. Never bypass source site access limits, change Live/theme access or payment settings without authorization.
+- Default final update: core status, only the most important evidence and numeric coverage, remaining issue counts, deferred work, blockers and exact resume command. Do not create extra ZIPs, duplicate audit reports or repeated commits without a deliverable need.
 
 ## Default product availability and inventory
 
