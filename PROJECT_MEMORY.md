@@ -21,6 +21,15 @@ Last updated: `YYYY-MM-DD`
 - Default branch: `<branch>`
 - Secrets stay in ignored `.env.local` or an OS credential store.
 
+## Stage execution checkpoint
+
+- Stage entry / canonical Prompt path: `<ID/path>`
+- Stage state and checklist: `agent-evidence/stage-state.json` / `TASK_CHECKLIST.md`
+- Current actionable remainder / blocker / resume command: `<actual evidence>`
+- Scope: all target-store products `ACTIVE`; tracked variants available `9999` at verified location `<GID>`; Online Store publication separate.
+- Catalog status/inventory readback: `<counts, exact failed GIDs, time>`
+- Footer template generation: `output/footer-pages/manifest.json` (`<brand/email/url verified>`); eight Page/Policy handles and technical/live scope: `<readback>`
+
 ## Completed phases
 
 - `<phase>`: `<result>`

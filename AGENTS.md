@@ -1,5 +1,18 @@
 # Shopify Theme Project Instructions
 
+## Mandatory stage completion (Shopify-Prompts FAST)
+
+Each numbered FAST entry is a complete stage, not a plan or a sample. Read the corresponding current Shopify-Prompts entry, subprompts, and `EXECUTION_RULES.md`; turn every applicable acceptance criterion into project `TASK_CHECKLIST.md`. Persist phase progress and current blockers to `agent-evidence/stage-state.json` after each batch. Continue independently actionable items without waiting for a new user prompt. Retry transient failures at most three times with backoff and readback; on persistent hard blockers save an exact resume command and evidence. Never claim `completed` if any applicable item is unverified. Skip verified work on resume only after comparing current store and artifact hashes. Keep tool output concise; summarize files instead of dumping DOM, base64 or full JSON into the model context.
+
+## Default product availability and inventory
+
+For the expressly selected target store, new and already existing products are intended to be `ACTIVE`, with **9999 available units per inventory-tracked variant at the verified selling/fulfillment location**. Treat this as the user's standing project instruction for new site builds. Read current status, item IDs, inventory tracking, valid location and quantities, calculate a difference, apply idempotently via supported Admin API, and read back ALL scoped products and inventory levels. Do not multiply 9999 across unapproved locations or claim a non-stockable/nontracked item has numeric inventory. Report exact exceptions and recheck after later catalog writes. `ACTIVE` does not itself authorize Online Store publication or Live Theme changes.
+
+## Reusable eight-page Footer content
+
+Use `content/footer-pages/` and `npm run footer:render` for the exact CUSTOMER CARE and ORDER INFO eight pages. Read verified brand name, support email and public store URL from the target store; never publish sample or unresolved placeholders. Existing Policies/Pages take precedence; create missing resources with stable handles using the generated HTML, and verify eight distinct reachable URLs in Draft Desktop/Mobile. Pages/Policies are shared data and can affect Live. Generated policy language must be reviewed for real store operations and legal obligations; technical rendering success is not legal approval.
+
+
 ## Project Progress Memory
 
 Project copies should contain a repository-level `PROJECT_MEMORY.md`. Read it

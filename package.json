@@ -9,7 +9,8 @@
     "verify:shopify": "node scripts/verify-shopify-context.mjs",
     "preflight:shopify": "node scripts/verify-shopify-context.mjs --site-build",
     "connect:shopify": "node scripts/connect-shopify-store.mjs",
-    "test:smoke": "playwright test"
+    "test:smoke": "playwright test",
+    "footer:render": "node scripts/render-footer-pages.mjs"
   },
   "devDependencies": {
     "@playwright/test": "^1.52.0",

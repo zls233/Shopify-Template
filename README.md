@@ -9,6 +9,12 @@
 
 `AGENTS.md` 是自动化执行时的权威规则。README 只解释如何使用模板，不替代其中的安全约束。
 
+## FAST 完整阶段、商品默认值与 Footer 模板
+
+- 完整阶段由 Shopify-Prompts 对应编号执行；本模板的 `AGENTS.md` 增加批次断点、验收差集和失败恢复要求。
+- 商品默认 `ACTIVE`；所有目标店铺商品的可跟踪 Variant 在经过核验的销售/履约库存地点设置可用库存 `9999`，每次写入后全量远端读回。不可追踪库存单列异常。`ACTIVE` 不等于 Online Store 发布。
+- 固定 Footer 的八个英文通用内容模板见 `content/footer-pages/README.md`，使用 `npm run footer:render -- --brand ... --store ... --email ...` 生成可直接用于 Shopify Page 的 HTML；现有真实 Shopify Policies 优先，自动生成政策发布前需要核对店铺实际事实和法定义务。
+
 ## 模板边界
 
 这个项目刻意保持轻量。它是一个 Shopify Theme 起始模板和一组最小检查，
