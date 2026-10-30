@@ -229,6 +229,14 @@ proof that an external checkout will show the correct brand.
   Scripts must resolve the Shopify CLI from PATH and must not embed a
   Windows-specific user directory or shell command.
 
+## Default .99 Price Ending Rule (all stores)
+
+- Every product variant's actual Shopify `price`, and its `compare_at_price` when present, must end in exactly `.99` in a two-decimal currency. Apply to existing and imported products, bulk updates and post-discount prices; a theme-only display change does not satisfy this rule.
+- Preserve the existing integer portion by default (e.g. 29.50 -> 29.99); when an approved discount policy changes the price, calculate it first and then normalize the result to `.99` with decimal/integer-cents arithmetic.
+- Require `compare_at_price > price > 0` when a compare-at price is present. Never invent or inflate an unsupported reference price to create an apparent discount. Flag conflicts and unsupported currencies explicitly.
+- Dry-run the diff, make idempotent price-only writes within the authorized store scope, and query all variant prices back through Admin API. Keep exact noncompliant variant IDs in the audit; storefront samples are supplementary. Use verified final prices for discount badges, even if the effective percentage differs slightly from the planned rate.
+- Follow Shopify-Prompts `EXECUTION_RULES.md` for the authoritative shared rule. This requirement does not grant permission to publish Live or alter checkout/payment.
+
 ## Shopify Data Model
 
 Keep the resource graph as the source of truth:
