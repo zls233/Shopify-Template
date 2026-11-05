@@ -2,18 +2,15 @@
 
 ## FAST delivery and efficient execution (default)
 
-This template follows `Shopify-Prompts/STAGE_COMPLETION_CONTRACT.md` v2 when that repository is available. FAST aims for a working, correct storefront rather than exhausting every optional visual or documentary check. The current store, explicit user scope and permission boundaries remain authoritative.
+This template follows `Shopify-Prompts/STAGE_COMPLETION_CONTRACT.md` **v3**, `VISUAL_FIDELITY_STANDARD.md`, and `NAVIGATION_LINK_GATE.md`. FAST is an efficiency mode, **not** a reduced visual or navigation quality mode. Current store, project scope, lawful asset use and permission boundaries remain authoritative.
 
-- Status: `completed_core` when all critical storefront functionality and relevant data requirements are verified, with optional P2 and non-blocking P1 items explicitly listed as `deferred`; `completed_full` only for complete requested detailed QA; `partial` or `blocked_core` when important functionality/data cannot be completed. Do not call untested or uncollected data verified.
-- Priority P0: wrong target store, unsafe mutation, significant data/variant/price errors, broken core navigation/cart/checkout entry, missing actual user-requested product status/inventory updates. Fix these before declaring a core-complete stage.
-- Priority P1: important layout, category visibility or content links. Repair if they impair current acceptance/usability; otherwise record follow-up with actual impact.
-- Priority P2: minor pixel/motion/style deviations, offline source-replay differences, historical reference deep dives, extra viewport screenshots, non-core SEO; do not block FAST for these. Explicit FULL or pixel-perfect requests override.
-- Start by reading existing `PROJECT_MEMORY.md`, the current stage/checkpoint, minimal relevant Prompt sections and Git diff. Confirm the Store / identity / Draft role once per relevant mutation phase. Do not repeatedly scan unchanged repository files, request unchanged permissions or re-check the same validated resources.
-- Use existing `TASK_CHECKLIST.md` (or equivalent) for **only the active P0/P1 work and deferred summary**. For long/bulk operations, keep `agent-evidence/stage-state.json` with scope, hashes, next batch, verified and remaining IDs. Update the project memory at the end, not after every trivial UI action.
-- Prefer data-level/API bulk verification for all affected products, variants, available inventory and catalog membership, and **representative** UI smoke checks for Home/PLP/PDP/Cart on desktop/mobile. Recheck affected pages when changed; no per-product screenshots, no per-classification browser loops unless the user explicitly requests them.
-- For reference/visual work, at most two productive visual adjustment passes per main template in FAST. Do not run full offline archives, exhaustive viewport matrices, repetitive screenshot/DOM captures or unrelated documentation/test suites unless a concrete failure or explicit request warrants them.
-- Batch API mutations safely, retry transient issues with bounded backoff and readback, resume only unfinished deltas. On persistent blockers, save a precise resume entry and finish independent work. Never bypass source site access limits, change Live/theme access or payment settings without authorization.
-- Default final update: core status, only the most important evidence and numeric coverage, remaining issue counts, deferred work, blockers and exact resume command. Do not create extra ZIPs, duplicate audit reports or repeated commits without a deliverable need.
+- `2-1` and `4-1` aim for evidence-backed `completed_full`: all in-scope Sections, media, fine motion, visual geometry, responsive states, Header/Mega Menu fidelity and correct link destinations must be implemented and checked. `6-1` must review those valid versioned results. Unfinished in-scope work is `partial` or genuinely `blocked_core`, not P2 or an unapproved `completed_core`.
+- P0: wrong store/theme or permissions, unsafe writes, major catalog/price/inventory/checkout failures and wrong-shop navigation. P1 mandatory: any in-scope navigation/source-domain leak, broken/incorrect destination, Header/Products/Mega Menu mismatch, media/motion/pixel/responsive failure. P2 may contain only explicitly excluded or approved-extra work.
+- Read existing `PROJECT_MEMORY.md`, current checkpoint, relevant numbered Prompts, repository diff and `docs/navigation-link-gate.md`. Confirm store/identity/Draft role at mutation boundaries. Reuse same-version evidence; don't redundantly capture or recheck unchanged work.
+- Maintain `TASK_CHECKLIST.md` plus `agent-evidence/stage-state.json` for multi-stage work. Record every in-scope requirement's real status and evidence; do not omit unresolved navigation/visual differences.
+- Prefer batched Admin data verification for all scoped catalog/inventory/menu resources; use Desktop/Mobile browser checks for each distinct navigation state and risk-driven user paths. Scan **all in-scope link targets** at the URL/resource layer, with representative and changed-risk real clicks; avoid pointless per-SKU screenshots.
+- Keep adjusting reproducible visual differences while progress is possible; there is **no default two-pass cap** and no automatic deferral of in-scope visual/media defects. Only bounded recovery of persistent identical external blockers is permitted.
+- Batch safely, read back writes, resume deltas, never bypass source-site access controls or change Live/payment/password without authorization. Final report states verified scope, exact evidence, untested items, blockers and resume command.
 
 ## Default product availability and inventory
 
@@ -315,10 +312,15 @@ Generated policy and service text is a draft for later business/legal review, no
 - Content scripts must fail safely before mutation when the installed app lacks
   the ability to write content. Do not require both scope names when
   `write_content` already grants read capability. A theme can retain an official
-  external help or store-locator link as a documented fallback, but must not
-  invent order, store, or shipping data.
+  external help/store-locator link **only** when explicitly authorized and
+  documented in the navigation allowlist; never use the original brand website
+  as an automatic fallback for missing local navigation. Do not invent dealer
+  coverage, parts inventory, order, store, or shipping information.
 
 ## Theme Architecture
+
+**Mandatory navigation/link gate:** read [docs/navigation-link-gate.md](docs/navigation-link-gate.md) and the Prompts repository `NAVIGATION_LINK_GATE.md` before implementing Header/Home CTA/menus. Preserve the source site's actual Desktop Products/Mega Menu shape, category columns, hover/focus/touch, mobile drawer and responsive behavior. Bind every in-scope link to the correct live Shopify resource; no source-domain fallback, guessed `/pages/<handle>`, placeholder page, silent homepage redirect or hidden dead link. Audit Admin menus and rendered state in addition to static Theme files; verify both visual fidelity and correct final click URL. Changes to one must regress the other.
+
 
 - Header, mega menu, and mobile navigation must render
   `section.settings.menu.links` and nested `link.links`. Do not maintain a

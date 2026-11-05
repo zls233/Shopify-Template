@@ -11,15 +11,26 @@
 
 ## FAST 交付状态与效率（2026-10-29 更新）
 
-新项目默认执行 Shopify-Prompts 的 FAST 核心交付标准：核心数据、页面、导航、变体、加购/购物车和必要资源真实可用即可标 `completed_core`。不是所有 P2、离线回放、逐个分类浏览器检查、像素级视觉误差都必须全部修好；保留明确的 deferred 清单。只有实际阻碍浏览/购买/重大数据或用户明确要求的事项才阻止核心完成。
+新项目默认遵循 Shopify-Prompts **v3**：FAST 只节省重复动作，**不降低** 2-1/4-1 范围内全部 Section、视频/动画、素材、像素级对照、响应式与导航/链接的完成标准；未完成不得用旧版 `completed_core` 或 P2 结案。具体执行规则见 `AGENTS.md` 和 `docs/navigation-link-gate.md`。
 
-执行策略：**复用已有状态 → 差异处理 → 批量 API 读回 → Desktop/Mobile 代表性 smoke → 修复真正的问题 → 收尾**。不默认全量重新采集、逐商品 CLI 调用、每次生成大量截图/报告、重复跑完整回归。用户明确 `FULL` 时才扩大详细验收。Active/9999 的所有目标商品/库存数据校验仍要求真实 Admin API 读回，不能被抽样 UI 替代。
+执行策略：**一次完整参考与源站导航映射 → 批量 Shopify 资源对账 → Draft 完整实现 → 静态源站外链检查 → Desktop/Mobile 真实交互与视觉核验 → 差异修复和读回**。可复用同版本证据和批量核验，但不能省略 Header/Mega Menu 结构、每条范围内链接的最终目标或精细视觉。Active/9999 仍须 Admin 全量读回。
 
 ## FAST 完整阶段、商品默认值与 Footer 模板
 
 - 完整阶段由 Shopify-Prompts 对应编号执行；本模板的 `AGENTS.md` 增加批次断点、验收差集和失败恢复要求。
 - 商品默认 `ACTIVE`；所有目标店铺商品的可跟踪 Variant 在经过核验的销售/履约库存地点设置可用库存 `9999`，每次写入后全量远端读回。不可追踪库存单列异常。`ACTIVE` 不等于 Online Store 发布。
 - 固定 Footer 的八个英文通用内容模板见 `content/footer-pages/README.md`，使用 `npm run footer:render -- --brand ... --store ... --email ...` 生成可直接用于 Shopify Page 的 HTML；现有真实 Shopify Policies 优先，自动生成政策发布前需要核对店铺实际事实和法定义务。
+
+## 导航与源站外链双门禁
+
+- 创建项目时记录 `SOURCE_SITE_URL`；2-1 的 `references/navigation-link-map.json` 覆盖所有 Desktop/Mobile Header、Mega Menu 二三级链接、首页 CTA 与保留的其它用户入口。缺失 Collection/Page 不得回退原官网；只绑定真实且用途正确的 Shopify 资源。
+- 在主题文件改动后运行静态扫描：
+
+```bash
+npm run audit:links -- --source https://source.example --theme theme --report agent-evidence/navigation-link-static.json
+```
+
+- 静态扫描只检查 Theme 文件的源站域名残留，不会读取 Shopify Admin 菜单、测试 JS 实际跳转或判断 URL 内容。继续用真实 Draft 浏览器和 Admin 完成 [导航双门禁](docs/navigation-link-gate.md) 的全部结构与目标验收；未测不能记通过。
 
 ## 模板边界
 
@@ -246,7 +257,9 @@ Logo 应与原站 Header 字标匹配，不能取 `menu-*.jpg`、商品或推广
 - [ ] Store、App identity、scopes 和 Theme ID 已记录。
 - [ ] 所有 mutation 都有显式 store、dry-run 或可审计输出。
 - [ ] Products、Collections、Menus、Metaobjects、Pages 和 Publications 已通过 API 复核。
-- [ ] Theme Check、JavaScript、JSON 和 `git diff --check` 已执行。
+- [ ] Theme Check、JavaScript、JSON、源站外链静态扫描和 `git diff --check` 已执行（未运行的明确记录）。
+- [ ] Header/Products/Mega Menu/移动抽屉的原站与 Draft 结构、交互、响应式已分别验证。
+- [ ] 已对全部范围内入口做 Shopify 资源与最终域名对账；原官网意外外跳为 0，例外外链有明确批准白名单。
 - [ ] Desktop 和 390x844 Mobile 已完成关键路径验证。
 - [ ] 变体、排序、筛选、分页、导航和 PDP 链接已验证。
 - [ ] 已明确测试的是 Draft Theme 还是 Live Theme。
@@ -256,5 +269,7 @@ Logo 应与原站 Header 字标匹配，不能取 `menu-*.jpg`、商品或推广
 ## 相关文件
 
 - [AGENTS.md](AGENTS.md)：自动化代理的完整工程规则。
+- [docs/navigation-link-gate.md](docs/navigation-link-gate.md)：导航结构与正确链接双重验收标准。
+- [scripts/audit-navigation-links.mjs](scripts/audit-navigation-links.mjs)：静态检查原站域名残留。
 - `interaction-audit.md`：原站与 Draft Preview 的交互审计记录。
 - `scripts/`：应当默认 dry-run、显式指定店铺并输出结构化审计结果。
