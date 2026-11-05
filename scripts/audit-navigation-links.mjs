@@ -68,8 +68,9 @@ for (const file of files.sort()) {
         return true;
       }
     });
-    // Literal hosts and dynamically assembled links also require review.
-    if (bad.length || !urls.length) {
+    // A literal host alongside an unrelated/allowed URL must still fail.
+    const residual = urls.reduce((remaining, url) => remaining.replace(url, ''), line);
+    if (bad.length || residual.toLowerCase().includes(sourceHost)) {
       issues.push({ file: path.relative(process.cwd(), file), line: i + 1, matches: bad, preview: line.trim().slice(0, 220) });
     }
   }
