@@ -273,3 +273,51 @@ Logo 应与原站 Header 字标匹配，不能取 `menu-*.jpg`、商品或推广
 - [scripts/audit-navigation-links.mjs](scripts/audit-navigation-links.mjs)：静态检查原站域名残留。
 - `interaction-audit.md`：原站与 Draft Preview 的交互审计记录。
 - `scripts/`：应当默认 dry-run、显式指定店铺并输出结构化审计结果。
+
+## 通用批处理工具（2026-11-06）
+
+新增四个只读/本地工具，减少 Codex 逐项操作和重复上下文。工具**不会**修改 Shopify 数据或发布主题，不会自行证明源站目录完整、视频/动画已还原、离线可回放或 Draft 验收通过。
+
+```bash
+npm install
+npm run workflow:status
+npm run reference:capture -- --plan references/reference-plan.json --out references
+npm run reference:media -- --index references/capture-index.json --out references/media
+npm run catalog:gate -- --manifest data/catalog/source-coverage.json --products data/catalog/normalized.json --report agent-evidence/catalog/discovery-gate.json
+npm run check
+```
+
+### 2-1 参考采集
+
+将 `examples/reference-plan.json` 复制为 `references/reference-plan.json`，换成真实**已获授权**的 `source`、页面及状态。每个 page 支持 `id/url/readySelector/states`；每个 state 为 `{id,steps:[...]}`，steps 可依次为 `click/hover/press/scroll/wait/select`，用 `selector/key/y/ms/value` 配置。默认 Desktop 1440×900、Mobile 390×844。脚本只访问清单内页面，遇访问限制停止后续抓取；已完成、相同 Plan Hash 的状态可续跑，`--force` 才重新采集。
+
+`reference:capture` 输出 `references/capture-index.json` 与 `references/captured/<state>/snapshot.html/dom.json/full.png`。`reference:media` 用观察到的图片/CSS/字体/视频链接下载资源，默认仅允许源域名；跨域 CDN 需显式重复 `--allow-host` 授权。资源默认每文件上限 25MB、总下载 500MB，可通过 `--max-bytes`/`--max-total-bytes` 调整，并明确记录超限/403/跳转/失败项。
+
+**先对一个页面/两个 viewport 做端到端样本验证**，包括媒体解码和离线引用，再填充全量页面及状态；自行补测字体、视频播放、动效时长、sticky、菜单/交互和断点。采集状态仅 `captured_unverified`。默认 `.gitignore` 排除大型二进制采集产物，请将需要长期留存的档案独立保存或使用 Git LFS，保证后续验收能访问。
+
+### 3-1 商品目录发现门禁
+
+参考 `examples/catalog-source-coverage.json` 建立项目的 `data/catalog/source-coverage.json`。包含来源 HTTPS URL、采集时间、每种来源 `kind/status/terminal/evidence`、全量 `expectedHandles`、带理由的 `excluded` 和失败项 `failures`。归一化产品为数组或 `{products:[]}`，每个商品需有 `handle` 和 `variants`；不强行补造缺少的 SKU。
+
+只要来源未确认终止、Handle 缺失/重复、排除理由缺失或变体结构错误，`catalog:gate` 返回退出码 2 和 JSON 差集。通过只意味着**清单声明与归一化数据相互一致**，还必须核对原站分页/来源终止的实际证据；然后才可执行代表性样本 mutation 和完整的 Admin 批量读回。
+
+### 可复用增量批处理（供项目导入器调用）
+
+`scripts/lib/batch-runner.mjs` 导出 `runBatches`，集中处理稳定 ID、输入哈希、锁文件、检查点、有限重试、并发和失败差集。它是**通用执行框架，不是 Shopify 导入器**；每个项目的 `processItem` 必须检查身份/目标 Store、执行幂等 mutation，再完成远端读回后才返回成功。
+
+```js
+import {runBatches} from './scripts/lib/batch-runner.mjs';
+const report = await runBatches({
+  items: normalizedProducts,
+  idOf: product => product.handle,
+  checkpointPath: 'agent-evidence/catalog/import-checkpoint.json',
+  processItem: async (product) => {
+    await upsertProduct(product);       // 项目提供的授权且幂等操作
+    await verifyRemoteProduct(product); // 必须远端读回后才算完成
+  },
+  isRetryable: error => error.status === 429 || error.status >= 500,
+});
+console.log(JSON.stringify(report));
+```
+
+`inputHash` 默认来自输入 JSON；若输入变化，会拒绝复用旧检查点，避免将旧批次误判为完成。针对新数据生成新 checkpoint，或明确完成旧结果迁移。以上示意中的 `upsertProduct` 和 `verifyRemoteProduct` **不是模板自带 API**，必须由项目根据店铺授权及资源模型实现。

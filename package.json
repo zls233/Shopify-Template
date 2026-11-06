@@ -4,14 +4,18 @@
   "type": "module",
   "scripts": {
     "check": "npm run check:js && npm run check:json",
-    "check:js": "node --check scripts/check-json.mjs && node --check scripts/lib/shopify-admin.mjs && node --check scripts/verify-shopify-context.mjs && node --check scripts/connect-shopify-store.mjs && node --check theme/assets/theme.js && node --check scripts/render-footer-pages.mjs && node --check scripts/audit-navigation-links.mjs",
+    "check:js": "node --check scripts/check-json.mjs && node --check scripts/lib/shopify-admin.mjs && node --check scripts/verify-shopify-context.mjs && node --check scripts/connect-shopify-store.mjs && node --check theme/assets/theme.js && node --check scripts/render-footer-pages.mjs && node --check scripts/audit-navigation-links.mjs && node --check scripts/workflow-status.mjs && node --check scripts/catalog-gate.mjs && node --check scripts/reference-capture.mjs && node --check scripts/reference-media.mjs && node --check scripts/lib/batch-runner.mjs",
     "check:json": "node scripts/check-json.mjs",
     "verify:shopify": "node scripts/verify-shopify-context.mjs",
     "preflight:shopify": "node scripts/verify-shopify-context.mjs --site-build",
     "connect:shopify": "node scripts/connect-shopify-store.mjs",
     "test:smoke": "playwright test",
     "footer:render": "node scripts/render-footer-pages.mjs",
-    "audit:links": "node scripts/audit-navigation-links.mjs"
+    "audit:links": "node scripts/audit-navigation-links.mjs",
+    "workflow:status": "node scripts/workflow-status.mjs",
+    "catalog:gate": "node scripts/catalog-gate.mjs",
+    "reference:capture": "node scripts/reference-capture.mjs",
+    "reference:media": "node scripts/reference-media.mjs"
   },
   "devDependencies": {
     "@playwright/test": "^1.52.0",

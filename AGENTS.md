@@ -1,5 +1,19 @@
 # Shopify Theme Project Instructions
 
+## Token-efficient automation helpers (2026-11-06)
+
+Use the repository's reusable scripts rather than repeatedly generating per-product or per-page one-off Python/TypeScript snippets. These tools are **read-only against Shopify**; they do not publish, import, authorize, or bypass source protection. They produce concise JSON stdout plus disk evidence:
+
+- `npm run workflow:status`: small checkpoint summary from `agent-evidence/stage-state.json`.
+- `npm run reference:capture -- --plan references/reference-plan.json`: explicit-plan desktop/mobile screenshots, DOM, style/links/media URL index; checkpoint/resume. An item marked `captured_unverified` does **not** prove all interactions, videos, offline playback, responsive states or pixel fidelity are complete.
+- `npm run reference:media -- --index references/capture-index.json --allow-host approved-cdn.example`: save observed assets with hashes, content limits and finite retries. An unapproved CDN or 403 is a recorded gap, never a reason to bypass protection.
+- `npm run catalog:gate -- --manifest data/catalog/source-coverage.json --products data/catalog/normalized.json`: **pre-bulk-import gate** requiring explicit discovery terminal evidence, expected handle coverage, exclusion reasons and variant integrity. Exit 2 on any failure. A pass does not independently prove source catalog completeness; inspect the source discovery evidence.
+
+**No full catalog import** based on homepage/sample/discovered subset alone. First complete discovery and normalized schema audit; then mutation dry-run with representative variants, followed by idempotent batch import and full remote readback. Only a user-authorized reduced scope can proceed as such, never disguised as entire source catalog.
+
+Do not print full DOM, CSS, JSONL, image payloads, logs, or credentials into model context; write them to files and print counts, diffs and failure paths. Reuse valid evidence when the source/hash/store/theme identity has not changed. Never reduce any v3 visual fidelity/ACTIVE/9999/.99/footer/navigation/Draft acceptance requirements.
+
+
 ## FAST delivery and efficient execution (default)
 
 This template follows `Shopify-Prompts/STAGE_COMPLETION_CONTRACT.md` **v3**, `VISUAL_FIDELITY_STANDARD.md`, and `NAVIGATION_LINK_GATE.md`. FAST is an efficiency mode, **not** a reduced visual or navigation quality mode. Current store, project scope, lawful asset use and permission boundaries remain authoritative.
@@ -486,3 +500,7 @@ This section applies to every project task, including numbered prompts run from 
 - Keep the checklist and `PROJECT_MEMORY.md` synchronized with the verified store/theme identity, artifacts, remaining discrepancies, blockers, and a precise resumable next action. On a new chat, resume from verified state rather than restarting or accepting old completion claims without evidence.
 - Overall `completed` is allowed only when every in-scope applicable requirement is `verified` and all non-applicable items are legitimately `excluded`. Otherwise report `partial` or `blocked` as appropriate, with concrete evidence and unfinished items.
 - Respect the Testing Policy: normal readback, syntax validation and targeted inspection are verification; creating/running automated test suites still requires the user's explicit testing instruction. A task cannot be called verified if its required acceptance evidence is missing; report the gap rather than inventing a pass.
+
+## Reusable project-specific batch processing
+
+When bulk mutations are required after discovery gate, use `scripts/lib/batch-runner.mjs` (exported `runBatches`) for stable ID fingerprints, single-process lock, bounded retries, small JSON summaries and resumable checkpoints. It deliberately contains no Shopify mutation logic. Implement project-specific `processItem` to verify target Store/identity, perform idempotent writes and **read back the remote result before returning**. Treat mismatched input hashes as a hard stop; never rerun completed records or silently retain stale checkpoints. Do not retry authentication/403/CAPTCHA or provider quota protection. Keep all existing Draft/Live, data and visual QA gates intact.
