@@ -1,0 +1,27 @@
+{
+  "source": "https://example.org",
+  "viewports": [
+    {
+      "id": "desktop",
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "id": "mobile",
+      "width": 390,
+      "height": 844
+    }
+  ],
+  "pages": [
+    {
+      "id": "home",
+      "url": "/",
+      "states": [
+        {
+          "id": "default",
+          "steps": []
+        }
+      ]
+    }
+  ]
+}

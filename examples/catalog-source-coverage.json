@@ -1,0 +1,10 @@
+{
+  "source": "https://example.org",
+  "snapshotAt": "2026-11-06T00:00:00Z",
+  "discovery": [
+    {"kind": "sitemap", "status": "complete", "terminal": true, "evidence": "references/sitemap.json"}
+  ],
+  "expectedHandles": ["sample-product"],
+  "excluded": [],
+  "failures": []
+}

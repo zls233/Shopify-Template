@@ -9,3 +9,7 @@ output/
 references/output/
 .shopify/
 .playwright-cli/
+
+# Large generated browser archives; store separately or track intentionally with Git LFS
+references/captured/
+references/media/
